@@ -42,6 +42,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -129,6 +131,25 @@ public class XWalkCordovaWebView implements CordovaWebView {
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebViewSettings() {
+
+        try {
+            final String packageName = this.cordova.getActivity().getPackageName();
+            final PackageManager pm = this.cordova.getActivity().getPackageManager();
+            ApplicationInfo appInfo;
+
+            appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+
+            if((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+                XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
+            }
+        } catch (IllegalArgumentException e) {
+            Log.d(TAG, "You have one job! To turn on Remote Web Debugging! YOU HAVE FAILED! ");
+            e.printStackTrace();
+        } catch (NameNotFoundException e) {
+            Log.d(TAG, "This should never happen: Your application's package can't be found.");
+            e.printStackTrace();
+        }
+
         webview.setVerticalScrollBarEnabled(false);
         // TODO: The Activity is the one that should call requestFocus().
         if (shouldRequestFocusOnInit()) {
