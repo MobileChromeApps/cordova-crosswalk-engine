@@ -1,0 +1,14 @@
+// Crosswalk support multiple APKs.
+ext.multiarch=true
+
+// Crosswalk AAR host in company Maven repository.
+repositories {
+    maven {
+        url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2'
+    }
+}
+
+// Dependence Crosswalk AAR version.
+dependencies {
+    compile 'org.xwalk:xwalk_core_library_beta:10.39.235.1'
+}

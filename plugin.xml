@@ -27,6 +27,6 @@
         <source-file src="src/android/XWalkCordovaUiClient.java" target-dir="src/org/apache/cordova/engine/crosswalk" />
         <source-file src="src/android/XWalkCordovaView.java" target-dir="src/org/apache/cordova/engine/crosswalk" />
 
-        <framework src="libs/xwalk_core_library" custom="true" />
+        <framework src="libs/xwalk_core_library/xwalk.gradle" custom="true" type="gradleReference"/>
     </platform>
 </plugin>
