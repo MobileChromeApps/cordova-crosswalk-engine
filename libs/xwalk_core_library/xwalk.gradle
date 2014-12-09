@@ -3,6 +3,16 @@ repositories {
     url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2'
   }
 }
+
+ext.multiarch=true
+
 dependencies {
   compile 'org.xwalk:xwalk_core_library_beta:9.38.208.4'
+}
+
+android {
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 19
+    }
 }
