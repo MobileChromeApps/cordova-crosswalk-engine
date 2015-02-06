@@ -18,41 +18,23 @@
 */
 package org.crosswalk.engine;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import org.apache.cordova.CordovaResourceApi;
-import org.apache.cordova.CordovaUriHelper;
-import org.apache.cordova.CordovaResourceApi.OpenForReadResult;
-import org.apache.cordova.LOG;
-
-import android.annotation.TargetApi;
 import android.net.Uri;
-import android.os.Build;
 import android.webkit.WebResourceResponse;
 
+import org.apache.cordova.CordovaResourceApi;
+import org.apache.cordova.CordovaResourceApi.OpenForReadResult;
+import org.apache.cordova.LOG;
 import org.chromium.net.NetError;
 import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkView;
 
-/**
- * This class is the WebViewClient that implements callbacks for our web view.
- * The kind of callbacks that happen here are regarding the rendering of the
- * document instead of the chrome surrounding it, such as onPageStarted(), 
- * shouldOverrideUrlLoading(), etc. Related to but different than
- * CordovaChromeClient.
- *
- * @see <a href="http://developer.android.com/reference/android/webkit/WebViewClient.html">WebViewClient</a>
- * @see <a href="http://developer.android.com/guide/webapps/webview.html">WebView guide</a>
- * @see XwalkCordovaChromeClient
- * @see XWalkCordovaWebView
- */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class XWalkCordovaResourceClient extends XWalkResourceClient {
 
-	static final String TAG = "XWalkCordovaWebViewClient";
-    XWalkCordovaWebView appView;
-    private CordovaUriHelper helper;
+	private static final String TAG = "XWalkCordovaResourceClient";
+    protected XWalkWebViewEngine parentEngine;
 
     // Success
     public static final int ERROR_OK = 0;
@@ -87,10 +69,9 @@ public class XWalkCordovaResourceClient extends XWalkResourceClient {
     // Too many requests during this load
     public static final int ERROR_TOO_MANY_REQUESTS = -15;
 
-    public XWalkCordovaResourceClient(XWalkCordovaWebView view) {
-        super(view.getView());
-        appView = view;
-        helper = new CordovaUriHelper(appView.cordova, appView);
+    public XWalkCordovaResourceClient(XWalkWebViewEngine parentEngine) {
+        super(parentEngine.webView);
+        this.parentEngine = parentEngine;
     }
 
     // Map XWalk error code about loading a page to Android specific ones.
@@ -205,20 +186,25 @@ public class XWalkCordovaResourceClient extends XWalkResourceClient {
     @Override
     public void onReceivedLoadError(XWalkView view, int errorCode, String description,
            String failingUrl) {
-       this.appView.onReceivedLoadError(errorCode, description, failingUrl);
+        LOG.d(TAG, "CordovaWebViewClient.onReceivedError: Error code=%s Description=%s URL=%s", errorCode, description, failingUrl);
+
+        // Convert the XWalk error code to Cordova error code, which follows the Android spec,
+        // http://developer.android.com/reference/android/webkit/WebViewClient.html.
+        errorCode = XWalkCordovaResourceClient.convertErrorCode(errorCode);
+        parentEngine.client.onReceivedError(errorCode, description, failingUrl);
     }
 
     @Override
     public WebResourceResponse shouldInterceptLoadRequest(XWalkView view, String url) {
         try {
             // Check the against the white-list.
-            if ((url.startsWith("http:") || url.startsWith("https:")) && !appView.getWhitelist().isUrlWhiteListed(url)) {
+            if (!parentEngine.pluginManager.shouldAllowRequest(url)) {
                 LOG.w(TAG, "URL blocked by whitelist: " + url);
                 // Results in a 404.
                 return new WebResourceResponse("text/plain", "UTF-8", null);
             }
 
-            CordovaResourceApi resourceApi = appView.getResourceApi();
+            CordovaResourceApi resourceApi = parentEngine.resourceApi;
             Uri origUri = Uri.parse(url);
             // Allow plugins to intercept WebView requests.
             Uri remappedUri = resourceApi.remapUri(origUri);
@@ -231,7 +217,7 @@ public class XWalkCordovaResourceClient extends XWalkResourceClient {
             return null;
         } catch (IOException e) {
             if (!(e instanceof FileNotFoundException)) {
-                LOG.e("IceCreamCordovaWebViewClient", "Error occurred while loading a file (returning a 404).", e);
+                LOG.e(TAG, "Error occurred while loading a file (returning a 404).", e);
             }
             // Results in a 404.
             return new WebResourceResponse("text/plain", "UTF-8", null);
@@ -240,6 +226,6 @@ public class XWalkCordovaResourceClient extends XWalkResourceClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(XWalkView view, String url) {
-        return helper.shouldOverrideUrlLoading(url);
+        return parentEngine.client.shouldOverrideUrlLoading(url);
     }
 }

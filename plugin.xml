@@ -18,10 +18,10 @@
 
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <preference name="webView" value="org.crosswalk.engine.XWalkCordovaWebView" />
+            <preference name="webView" value="org.crosswalk.engine.XWalkWebViewEngine" />
         </config-file>
 
-        <source-file src="src/android/XWalkCordovaWebView.java" target-dir="src/org/crosswalk/engine" />
+        <source-file src="src/android/XWalkWebViewEngine.java" target-dir="src/org/crosswalk/engine" />
         <source-file src="src/android/XWalkExposedJsApi.java" target-dir="src/org/crosswalk/engine" />
         <source-file src="src/android/XWalkCordovaResourceClient.java" target-dir="src/org/crosswalk/engine" />
         <source-file src="src/android/XWalkCordovaUiClient.java" target-dir="src/org/crosswalk/engine" />
