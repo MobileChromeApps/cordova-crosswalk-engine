@@ -13,7 +13,7 @@
 
     <engines>
       <engine name="cordova-android" version=">=4" />
-      <engine name="cordova-plugman" version=">=4.2.0" /><!-- needed for gradleReference support -->
+      <engine name="cordova-lib" version=">=4.2.0" /><!-- needed for gradleReference support -->
     </engines>
 
     <platform name="android">
