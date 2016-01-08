@@ -18,14 +18,18 @@
         <engine name="cordova-ios" version=">=3.9.2"/>
     </engines>
 
+    <preference name="XWALK_VERSION" default="15+" />
+    <preference name="XWALK_COMMANDLINE" default="--disable-pull-to-refresh-effect" />
+    <preference name="XWALK_MODE" default="embedded" />
+
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <preference name="webView" value="org.crosswalk.engine.XWalkWebViewEngine"/>
-            <preference name="xwalkVersion" default="15+"/>
-            <preference name="xwalkCommandLine" default="--disable-pull-to-refresh-effect"/>
-            <preference name="xwalkMode" default="embedded" />
-            <preference name="xwalkMultipleApk" default="true" />
+            <preference name="xwalkVersion" value="$XWALK_VERSION" />
+            <preference name="xwalkCommandLine" value="$XWALK_COMMANDLINE" />
+            <preference name="xwalkMode" value="$XWALK_MODE" />
+            <preference name="xwalkMultipleApk" value="true" />
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/*">

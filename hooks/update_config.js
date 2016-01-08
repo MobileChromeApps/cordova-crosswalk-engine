@@ -106,21 +106,6 @@ module.exports = function(context) {
         if (xwalkVariables['xwalkMode'] == 'shared') {
             addPermission();
         }
-
-        // Configure the final value in the config.xml
-        var configXmlRoot = XmlHelpers.parseElementtreeSync(projectConfigurationFile);
-        var preferenceUpdated = false;
-        for (name in xwalkVariables) {
-            var child = configXmlRoot.find('./preference[@name="' + name + '"]');
-            if(!child) {
-                preferenceUpdated = true;
-                child = et.XML('<preference name="' + name + '" value="' + xwalkVariables[name] + '" />');
-                XmlHelpers.graftXML(configXmlRoot, [child], '/*');
-            }
-        }
-        if(preferenceUpdated) {
-            fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
-        }
     }
 
     /** Remove preference*/
@@ -129,15 +114,6 @@ module.exports = function(context) {
             // Add the permission of write_external_storage in shared mode
             removePermission();
         }
-
-        var configXmlRoot = XmlHelpers.parseElementtreeSync(projectConfigurationFile);
-        for (name in xwalkVariables) {
-            var child = configXmlRoot.find('./preference[@name="' + name + '"]');
-            if (child) {
-                XmlHelpers.pruneXML(configXmlRoot, [child], '/*');
-            }
-        }
-        fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
     }
 
     xwalkVariables = defaultPreferences();
