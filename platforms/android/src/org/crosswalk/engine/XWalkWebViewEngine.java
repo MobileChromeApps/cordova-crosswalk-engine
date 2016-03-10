@@ -41,8 +41,6 @@ import org.apache.cordova.PluginManager;
 import org.xwalk.core.XWalkActivityDelegate;
 import org.xwalk.core.XWalkNavigationHistory;
 import org.xwalk.core.XWalkView;
-import org.xwalk.core.internal.XWalkSettings;
-import org.xwalk.core.internal.XWalkViewBridge;
 
 /**
  * Glue class between CordovaWebView (main Cordova logic) and XWalkCordovaView (the actual View).
@@ -144,7 +142,7 @@ public class XWalkWebViewEngine implements CordovaWebViewEngine {
         if (!xwalkUserAgent.isEmpty()) {
             webView.setUserAgentString(xwalkUserAgent);
         } else {
-            xwalkUserAgent = getXWalkViewUserAgent(webView);     
+            xwalkUserAgent = webView.getUserAgentString();     
         }
         
         String xwalkAppendUserAgent = preferences == null ? "" : preferences.getString("AppendUserAgent", "");
@@ -243,24 +241,5 @@ public class XWalkWebViewEngine implements CordovaWebViewEngine {
 
     public boolean isXWalkReady() {
         return activityDelegate.isXWalkReady();
-    }
-    
-    private String getXWalkViewUserAgent(XWalkView webView) {
-        try {
-            Method ___getBridge = XWalkView.class.getDeclaredMethod("getBridge");
-            ___getBridge.setAccessible(true);
-            XWalkViewBridge xWalkViewBridge = null;
-            xWalkViewBridge = (XWalkViewBridge) ___getBridge.invoke(webView);
-            XWalkSettings xWalkSettings = xWalkViewBridge.getSettings();
-            return xWalkSettings.getUserAgentString();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 }
