@@ -15,7 +15,7 @@
     <engines>
         <engine name="cordova-android" version=">=4"/>
         <engine name="cordova-plugman" version=">=4.2.0"/><!-- needed for gradleReference support -->
-        <engine name="cordova-ios" version=">=4.0.1"/>
+        <engine name="cordova-ios" version=">=3.9.2"/>
     </engines>
 
     <!-- android -->
@@ -52,18 +52,8 @@
 
     <!-- iOS -->
     <platform name="ios">
-        <config-file target="config.xml" parent="/*">
-            <preference name="CordovaWebViewEngine" value="XWalkWebViewEngine"/>
-        </config-file>
         <framework src="platforms/ios/frameworks/GCDWebServer.framework" custom="true"/>
         <framework src="platforms/ios/frameworks/XWalkView.framework" custom="true"/>
-
-        <header-file src="platforms/ios/src/XWalkNavigationDelegate.h"/>
-        <source-file src="platforms/ios/src/XWalkNavigationDelegate.m"/>
-        <header-file src="platforms/ios/src/XWalkUIDelegate.h"/>
-        <source-file src="platforms/ios/src/XWalkUIDelegate.m"/>
-        <header-file src="platforms/ios/src/XWalkWebViewEngine.h"/>
-        <source-file src="platforms/ios/src/XWalkWebViewEngine.m"/>
 
         <hook type="after_plugin_install" src="hooks/ios/after_plugin_install/000-update_xcode_config.js"/>
         <hook type="before_plugin_uninstall" src="hooks/ios/before_plugin_uninstall/000-remove_xcode_config.js"/>
