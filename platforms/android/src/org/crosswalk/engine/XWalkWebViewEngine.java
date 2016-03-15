@@ -19,6 +19,9 @@
 
 package org.crosswalk.engine;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -196,7 +199,15 @@ public class XWalkWebViewEngine implements CordovaWebViewEngine {
         String xwalkUserAgent = preferences == null ? "" : preferences.getString(XWALK_USER_AGENT, "");
         if (!xwalkUserAgent.isEmpty()) {
             webView.setUserAgentString(xwalkUserAgent);
+        } else {
+            xwalkUserAgent = webView.getUserAgentString();     
         }
+        
+        String xwalkAppendUserAgent = preferences == null ? "" : preferences.getString("AppendUserAgent", "");
+        if (!xwalkAppendUserAgent.isEmpty()) {
+            webView.setUserAgentString(xwalkUserAgent + " " + xwalkAppendUserAgent);
+        }
+        
         if (preferences.contains("BackgroundColor")) {
             int backgroundColor = preferences.getInteger("BackgroundColor", Color.BLACK);
             webView.setBackgroundColor(backgroundColor);
