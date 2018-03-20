@@ -29,7 +29,17 @@ def DEFAULT_MIN_SDK_VERSION = 14
 
 def getConfigPreference(name) {
     name = name.toLowerCase()
-    def xml = file("res/xml/config.xml").getText()
+
+    def xml
+
+    if (file("src/main/res/xml/config.xml").exists()) {
+        // cordova-android >= 7.0.0
+        xml = file("src/main/res/xml/config.xml").getText()
+    } else {
+        // cordova-android < 7.0.0
+        xml = file("res/xml/config.xml").getText()
+    }
+
     // Disable namespace awareness since Cordova doesn't use them properly
     def root = new XmlParser(false, false).parseText(xml)
 
