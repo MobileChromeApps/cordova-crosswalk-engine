@@ -63,6 +63,7 @@ public class XWalkWebViewEngine implements CordovaWebViewEngine {
     public static final String XWALK_Z_ORDER_ON_TOP = "xwalkZOrderOnTop";
 
     private static final String XWALK_EXTENSIONS_FOLDER = "xwalk-extensions";
+    private static final String XWALK_FILE_SCHEME_COOKIES = "xwalkFileSchemeCookies";
 
     private static final int PERMISSION_REQUEST_CODE = 100;
 
@@ -78,9 +79,12 @@ public class XWalkWebViewEngine implements CordovaWebViewEngine {
     protected XWalkActivityDelegate activityDelegate;
     protected String startUrl;
     protected CordovaPreferences preferences;
+    protected boolean xwalkFileSchemeCookies;
 
     /** Used when created via reflection. */
     public XWalkWebViewEngine(Context context, CordovaPreferences preferences) {
+        xwalkFileSchemeCookies = preferences == null ? false : preferences.getBoolean(XWALK_FILE_SCHEME_COOKIES, false);
+
         this.preferences = preferences;
         Runnable cancelCommand = new Runnable() {
             @Override
@@ -92,6 +96,11 @@ public class XWalkWebViewEngine implements CordovaWebViewEngine {
             @Override
             public void run() {
                 cookieManager = new XWalkCordovaCookieManager();
+
+                if (xwalkFileSchemeCookies) {
+                  cookieManager.setCookiesEnabled(true);
+                  cookieManager.setAcceptFileSchemeCookies(true);
+                }
 
                 initWebViewSettings();
                 exposeJsInterface(webView, bridge);
