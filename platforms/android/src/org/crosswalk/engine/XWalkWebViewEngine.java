@@ -56,7 +56,7 @@ import org.xwalk.core.XWalkGetBitmapCallback;
 /**
  * Glue class between CordovaWebView (main Cordova logic) and XWalkCordovaView (the actual View).
  */
-public class XWalkWebViewEngine implements CordovaWebViewEngine {
+public abstract class XWalkWebViewEngine implements CordovaWebViewEngine {
 
     public static final String TAG = "XWalkWebViewEngine";
     public static final String XWALK_USER_AGENT = "xwalkUserAgent";
