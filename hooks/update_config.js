@@ -13,7 +13,7 @@ module.exports = function(context) {
     }
 
     /** @external */
-    var fs = context.requireCordovaModule('fs'),
+    var fs = require('fs'),
         path = context.requireCordovaModule('path'),
         et = context.requireCordovaModule('elementtree');
 
