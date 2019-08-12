@@ -3,7 +3,7 @@
 module.exports = function(context) {
 
     /** @external */
-    var deferral = context.requireCordovaModule('q').defer(),
+    var deferral = require('q').defer(),
         UpdateConfig = require('./../update_config.js'),
         updateConfig = new UpdateConfig(context);
 
